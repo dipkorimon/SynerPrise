@@ -1,0 +1,8 @@
+# Ignore JetBrains IDE configuration directory
+.idea
+
+# Ignore virtual environment directory
+.venv
+
+# Ignore local settings file for overriding Django configurations
+local_settings.py
