@@ -3,9 +3,284 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
 </head>
-<body>
-    {% block content %} {% endblock %}
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+<!-- Sidebar -->
+<div class="flex">
+    <!-- Sidebar Content -->
+    <div id="sidebar"
+         class="bg-gray-800 text-white w-64 min-h-screen p-4 fixed left-0 top-0 transform translate-x-0 transition-all duration-500 ease-in-out relative">
+        <div class="text-xl font-semibold mb-6">SynerPrise</div>
+        <!-- ERP Menu -->
+        <ul class="synerPriseERPMenu relative">
+            <!-- HRM Menu -->
+            <li class="synerPriseHRMMenu relative">
+                <button class="dropdownButton block py-2 px-4 w-full text-left text-2sm hover:bg-gray-700 rounded">
+                    Menu 1 <i class="fas fa-chevron-down ml-2"></i>
+                </button>
+                <ul class="dropdownMenu absolute left-0 hidden bg-gray-800 text-white w-full mt-2 rounded z-50 shadow-lg overflow-hidden">
+                    <li><a href="#" class="block py-2 px-4 hover:bg-gray-600 text-sm">Option 2</a></li>
+                    <li><a href="#" class="block py-2 px-4 hover:bg-gray-600 text-sm">Option 1</a></li>
+                    <li><a href="#" class="block py-2 px-4 hover:bg-gray-600 text-sm">Option 3</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- Logout -->
+        <ul class="relative">
+            <li class="mt-2">
+                <a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="flex-1 ml-0 transition-all duration-500 ease-in-out">
+        <!-- Navbar -->
+        <div class="bg-gray-800 text-white">
+            <nav class="flex justify-between items-center p-4">
+                <!-- Left section: Logo or Brand -->
+                <div class="font-semibold flex">
+                    <!-- Sidebar Toggle Button -->
+                    <button id="sidebarToggle" class="text-white text-xl mr-4">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="text-white text-2xl">Company Name</h1>
+                </div>
+
+                <!-- Center section: Search Bar -->
+                <div class="w-1/3 relative">
+                    <input type="text" id="searchInput" class="w-full p-2 rounded-lg bg-gray-700 text-white"
+                           placeholder="Search...">
+                    <!-- Search Results Dropdown -->
+                    <div id="searchResults"
+                         class="absolute left-0 w-full mt-1 bg-white text-gray-800 rounded-lg shadow-lg hidden">
+                        <ul id="searchDropdownList">
+                            <!-- Dynamic search results will appear here -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right section: Notification Icon, Sidebar Toggle, Profile Dropdown -->
+                <div class="flex items-center space-x-6">
+                    <!-- Menu Button -->
+                    <div class="relative">
+                        <button id="menuButton" class="text-white text-xl flex items-center px-3 py-2 bg-gray-800 rounded">
+                            <i class="fas fa-bars"></i>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <ul id="menuDropdown" class="absolute hidden bg-white text-gray-800 rounded shadow-lg w-40 right-0 z-10">
+                            <li><a href="#" id="synerPriseERP" class="block px-4 py-2 hover:bg-gray-300 text-sm">SynerPriseERP</a></li>
+                            <li><a href="#" id="synerPriseHRM" class="block px-4 py-2 hover:bg-gray-300 text-sm">SynerPriseHRM</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Notification Icon -->
+                    <button class="relative">
+                        <i class="fas fa-bell text-white text-xl"></i>
+                        <!-- Notification Badge positioned on the right side of the icon -->
+                        <span class="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center -mr-2 -mt-2">3</span>
+                    </button>
+
+                    <!-- Profile Icon with Dropdown -->
+                    <div class="relative flex items-center space-x-2">
+                        <div class="text-white">
+                            <span id="username" class="font-semibold">John Doe</span>
+                            <span id="designation" class="text-sm text-gray-400">Admin</span>
+                        </div>
+                        <button id="profileButton" class="flex items-center space-x-2">
+                            <img class="w-8 h-8 rounded-full" src="https://www.w3schools.com/w3images/avatar2.png"
+                                 alt="Profile">
+                        </button>
+
+                        <!-- Profile Dropdown -->
+                        <div id="profileDropdown"
+                             class="absolute hidden bg-white text-gray-800 rounded shadow-lg w-40 right-0 z-10"
+                             style="margin-top: 10.5rem;">
+                            <ul>
+                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-300 text-sm">Profile</a></li>
+                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-300 text-sm">Change Password</a></li>
+                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-300 text-sm">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content Section -->
+        {% block content %} {% endblock %}
+    </div>
+</div>
+
+<!-- Voice Search Icon -->
+<button id="voiceSearchButton"
+        class="fixed bottom-8 right-8 bg-gray-300 text-gray rounded-full p-3 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-400 hover:scale-105 hover:shadow-xl">
+    <i class="fas fa-microphone text-2xl"></i>
+</button>
+
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white p-4 mt-auto">
+    <div class="text-center">
+        <p>&copy; <span id="year"></span> <a href="https://synerprise.com" class="text-blue-400 hover:underline"
+                                             target="_blank">Synerprise</a>. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Set the current year dynamically
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Toggle profile dropdown visibility
+    $('#profileButton').click(function (event) {
+        event.stopPropagation();
+        $('#profileDropdown').toggleClass('hidden');
+    });
+
+    // Close the dropdown if clicked outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest('#profileButton').length) {
+            $('#profileDropdown').addClass('hidden');
+        }
+    });
+
+    // Toggle menu button dropdown menu
+    $("#menuButton").click(function (event) {
+        event.stopPropagation(); // Prevents closing when clicking inside
+        $("#menuDropdown").toggle();
+    });
+
+    // Hide dropdown when clicking outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest("#menuButton, #menuDropdown").length) {
+            $("#menuDropdown").hide();
+        }
+    });
+
+
+    // Toggle sidebar dropdown menu
+    $(".dropdownButton").click(function (event) {
+        event.stopPropagation(); // Prevents event from bubbling to document
+
+        // Close all dropdowns except the clicked one
+        $(".dropdownMenu").not($(this).next()).addClass("hidden");
+
+        // Toggle only the clicked dropdown
+        $(this).next(".dropdownMenu").toggleClass("hidden");
+    });
+
+    // Close dropdowns when clicking outside
+    $(document).click(function () {
+        $(".dropdownMenu").addClass("hidden");
+    });
+
+
+    // Close dropdown when clicking outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest("#dropdownButton, #dropdownMenu").length) {
+            $("#dropdownMenu").addClass("hidden");
+        }
+    });
+
+    // Sidebar Toggle: Open and close with smooth animation
+    $('#sidebarToggle').click(function () {
+        $('#sidebar').toggleClass('translate-x-0');
+        $('#sidebar').toggleClass('-translate-x-full');
+        // Adjust main content when sidebar is open or closed
+        $('#mainContent').toggleClass('-ml-64');
+    });
+
+    <!-- Search Bar Dropdown functionality -->
+    $('#searchInput').on('input', function () {
+        var query = $(this).val().toLowerCase();
+        var results = [];
+        if (query.length > 0) {
+            // Simulate search results (replace with actual data)
+            results = ['Dashboard', 'Settings', 'Profile', 'Reports', 'Logout'].filter(function (item) {
+                return item.toLowerCase().includes(query);
+            });
+        }
+
+        // Populate the search dropdown with results or a "No results found" message
+        var resultsHtml = '';
+        if (results.length > 0) {
+            resultsHtml = results.map(function (result) {
+                return '<li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">' + result + '</li>';
+            }).join('');
+        } else {
+            resultsHtml = '<li class="py-2 px-4 text-gray-500">No results found</li>';
+        }
+
+        // Show the dropdown with results or message
+        if (resultsHtml) {
+            $('#searchResults').removeClass('hidden');
+            $('#searchDropdownList').html(resultsHtml);
+        } else {
+            $('#searchResults').addClass('hidden');
+        }
+    });
+
+    // Hide the search results dropdown when clicking outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest('#searchInput').length) {
+            $('#searchResults').addClass('hidden');
+        }
+    });
+
+    // Voice search button functionality
+    $('#voiceSearchButton').click(function () {
+        if ('webkitSpeechRecognition' in window) {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                var voiceSearchQuery = event.results[0][0].transcript;
+                // Update the search input field with the voice input
+                $('#searchInput').val(voiceSearchQuery);
+
+                // Trigger the search input functionality manually
+                $('#searchInput').trigger('input');
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech Recognition Error: ", event.error);
+            };
+
+            recognition.onend = function () {
+                console.log("Voice search ended");
+            };
+        } else {
+            alert("Speech recognition is not supported in this browser.");
+        }
+    });
+
+    // Show and hide sidebar menus
+    $("#synerPriseERP").click(function (event) {
+        $(".synerPriseERPMenu").show();
+    });
+
+    $("#synerPriseHRM").click(function (event) {
+        $(".synerPriseHRMMenu").show();
+        $(".synerPriseERPMenu").hide();
+        $(".synerPriseCRMMenu").hide();
+    });
+</script>
 </body>
 </html>
