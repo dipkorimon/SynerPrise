@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django migrations
+**/migrations/
+!*/migrations/__init__.py
+
+# Django DB (if you're using SQLite)
+db.sqlite3
+
+# Virtual environment
+venv/
+.env
+*.env
+.env.*
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Node modules if you also use Next.js in same repo
+node_modules/
+
+# Compiled static files
+staticfiles/
+static/
+media/
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+.pytest_cache/
+.tox/
+.nox/
+
+# pip tools
+pip-log.txt
+
+# Build
+build/
+dist/
+*.egg-info/
+
+
+# Client (Node.js/React/Next.js etc.)
+client/node_modules/
+client/.next/
+client/out/
+client/.env.local
+client/.env.production
+client/.env.development
+client/package-lock.json
+client/yarn.lock
+
+# Coverage
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+.coverage.*
+
+# MyPy, Pyre, Pylint, etc.
+.mypy_cache/
+.pyre/
+.pylint.d/
+
+# Editor files
+*.swp
+*.swo
+.idea/
+
