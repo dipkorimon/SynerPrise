@@ -6,6 +6,7 @@ import InputField from "@/components/InputField";
 import SubmitButton from "@/components/SubmitButton";
 import Link from "next/link";
 import {RiLockPasswordLine} from "react-icons/ri";
+import {useMessage} from "@/contexts/MessageContext";
 
 export default function ChangePasswordPage() {
     const router = useRouter();
@@ -16,8 +17,7 @@ export default function ChangePasswordPage() {
         confirm_new_password: "",
     });
 
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
+    const { showMessage } = useMessage();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,8 +26,8 @@ export default function ChangePasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setMessage("");
-        setError("")
+        showMessage("");
+        showMessage("")
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -44,7 +44,7 @@ export default function ChangePasswordPage() {
             const data = await res.json();
 
             if (res.ok) {
-                setMessage(data.msg);
+                showMessage({type: "success", text: data.msg});
                 setForm({
                     old_password: "",
                     new_password: "",
@@ -55,10 +55,10 @@ export default function ChangePasswordPage() {
                     router.push("/auth/login/");
                 }, 1500);
             } else {
-                setError(data.error || "Something went wrong");
+                showMessage({type: "error", text: data.error || "Something went wrong"});
             }
         } catch (err) {
-            setError("Network error");
+            showMessage({type: "error", text: "Network error"});
         }
     };
 
@@ -66,9 +66,6 @@ export default function ChangePasswordPage() {
         <div className="page-wrapper">
             <div className="card">
                 <h2 className="heading">Change Password</h2>
-                {error && <p className="error-text">{error}</p>}
-                {message && <p className="success-text">{message}</p>}
-
                 <form onSubmit={handleSubmit} className="space-y-3 mb-4">
                     <InputField
                         name="old_password"
