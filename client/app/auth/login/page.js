@@ -7,6 +7,7 @@ import {useRouter} from "next/navigation";
 import {useState} from "react";
 import {FaUserAlt} from "react-icons/fa";
 import {RiLockPasswordLine} from "react-icons/ri";
+import {useMessage} from "@/contexts/MessageContext";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -16,8 +17,7 @@ export default function LoginPage() {
         password: "",
     });
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const { showMessage } = useMessage();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,8 +25,8 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        setSuccess("");
+        showMessage("");
+        showMessage("");
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -46,19 +46,19 @@ export default function LoginPage() {
                     localStorage.setItem("token", data.token);
                 }
 
-                setSuccess(data.msg || "Login successful");
-                setError("");
+                showMessage({type: "success", text: data.msg || "Login successful"});
+                showMessage("");
 
                 setTimeout(() => {
                     router.push("/");
                 }, 1500);
             } else {
-                setError(data.detail ||data.error || "Invalid credentials");
-                setSuccess("");
+                showMessage({type: "error", text: data.detail || data.error || "Invalid credentials"});
+                showMessage("");
             }
         } catch (err) {
-            setError("Server error");
-            setSuccess("");
+            showMessage({type: "error", text: "Server error"});
+            showMessage("");
         }
     };
 
@@ -66,8 +66,6 @@ export default function LoginPage() {
         <div className="page-wrapper">
             <div className="card">
                 <h2 className="heading">Good to See You Again</h2>
-                {error && <p className="error-text">{error}</p>}
-                {success && <p className="success-text">{success}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-3 mb-4">
                     <InputField
