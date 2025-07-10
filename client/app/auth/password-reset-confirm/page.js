@@ -32,8 +32,6 @@ export default function ResetPasswordConfirmPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        showMessage("");
-        showMessage("");
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/password-reset-confirm/`, {

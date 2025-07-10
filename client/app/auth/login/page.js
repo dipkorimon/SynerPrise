@@ -25,8 +25,6 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        showMessage("");
-        showMessage("");
 
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -47,18 +45,15 @@ export default function LoginPage() {
                 }
 
                 showMessage({type: "success", text: data.msg || "Login successful"});
-                showMessage("");
 
                 setTimeout(() => {
                     router.push("/");
                 }, 1500);
             } else {
                 showMessage({type: "error", text: data.detail || data.error || "Invalid credentials"});
-                showMessage("");
             }
         } catch (err) {
             showMessage({type: "error", text: "Server error"});
-            showMessage("");
         }
     };
 

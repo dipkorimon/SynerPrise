@@ -26,9 +26,6 @@ export default function ChangePasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        showMessage("");
-        showMessage("")
-
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
         try {

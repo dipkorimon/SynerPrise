@@ -26,8 +26,6 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        showMessage("");
-        showMessage("");
 
         if (form.password !== form.confirm_password) {
             showMessage({type: "error", text: "Passwords do not match"});

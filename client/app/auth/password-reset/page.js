@@ -19,7 +19,6 @@ export default function PasswordResetRequestPage() {
         setLoading(true);
         showMessage("");{message && <p className="success-text">{message}</p>}
                 {error && <p className="error-text">{error}</p>}
-        showMessage("");
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/password-reset/`, {
