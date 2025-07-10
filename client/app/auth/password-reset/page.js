@@ -33,16 +33,16 @@ export default function PasswordResetRequestPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                showMessage(data.error || "Something went wrong");
+                showMessage({type: "error", text: data.error || "Something went wrong"});
             } else {
-                showMessage(data.message);
+                showMessage({type: "success", text: data.message});
 
                 setTimeout(() => {
                     router.push("/auth/password-reset-confirm");
                 }, 1500);
             }
         } catch (err) {
-            showMessage("Network error");
+            showMessage({type: "error", text: "Network error"});
         } finally {
             setLoading(false);
         }

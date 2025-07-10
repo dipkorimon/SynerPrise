@@ -6,6 +6,7 @@ import { useState } from "react";
 import {useRouter} from "next/navigation";
 import {FaUserAlt} from "react-icons/fa";
 import {RiLockPasswordLine, RiTokenSwapLine} from "react-icons/ri";
+import {useMessage} from "@/contexts/MessageContext";
 
 export default function ResetPasswordConfirmPage() {
     const router = useRouter();
@@ -18,8 +19,8 @@ export default function ResetPasswordConfirmPage() {
     });
 
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
+
+    const { showMessage } = useMessage();
 
     const handleChange = (e) => {
         setForm({
@@ -31,8 +32,8 @@ export default function ResetPasswordConfirmPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMessage("");
-        setError("");
+        showMessage("");
+        showMessage("");
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/password-reset-confirm/`, {
@@ -46,16 +47,16 @@ export default function ResetPasswordConfirmPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                setError(data.error || "Something went wrong");
+                showMessage({type: "error", text: data.error || "Something went wrong"});
             } else {
-                setMessage(data.msg || "Password reset successful");
+                showMessage({type:"success", text: data.msg || "Password reset successful"});
 
                 setTimeout(() => {
                     router.push("/auth/login");
                 }, 1500);
             }
         } catch (err) {
-            setError("Network error");
+            showMessage({type: "error", text: "Network error"});
         } finally {
             setLoading(false);
         }
@@ -68,9 +69,6 @@ export default function ResetPasswordConfirmPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                     Enter your UID and token from the email, then choose a new password to reset your account access.
                 </p>
-
-                {message && <p className="text-green-600 mb-2">{message}</p>}
-                {error && <p className="text-red-600 mb-2">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-3 mb-4">
                     <InputField
