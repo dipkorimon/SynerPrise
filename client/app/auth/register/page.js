@@ -8,6 +8,7 @@ import Link from "next/link";
 import {FiMail} from "react-icons/fi";
 import {FaUserAlt} from "react-icons/fa";
 import {RiLockPasswordLine} from "react-icons/ri";
+import {useMessage} from "@/contexts/MessageContext";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -17,19 +18,17 @@ export default function RegisterPage() {
         password: "",
         confirm_password: "",
     });
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+
+    const { showMessage } = useMessage();
 
     const handleChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        setSuccess("");
 
         if (form.password !== form.confirm_password) {
-            setError("Passwords do not match");
+            showMessage({type: "error", text: "Passwords do not match"});
             return;
         }
 
@@ -44,14 +43,14 @@ export default function RegisterPage() {
             const data = await res.json();
 
             if (res.ok) {
-                setSuccess(data.msg);
+                showMessage({type: "success", text: data.msg});
                 setForm({ username: "", email: "", password: "", confirm_password: "" });
                 setTimeout(() => router.push("/auth/login/"), 3000);
             } else {
-                setError(Object.values(data).flat().join(" "));
+                showMessage({type: "error", text: Object.values(data).flat().join(" ")});
             }
         } catch (err) {
-            setError("Something went wrong");
+            showMessage({type: "error", text: "Something went wrong"});
         }
     };
 
@@ -59,8 +58,6 @@ export default function RegisterPage() {
         <div className="page-wrapper">
             <div className="card">
                 <h2 className="heading">Let’s Get You Started</h2>
-                {error && <p className="error-text">{error}</p>}
-                {success && <p className="success-text">{success}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-3 mb-4">
                     <InputField
