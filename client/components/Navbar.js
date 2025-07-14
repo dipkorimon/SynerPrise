@@ -122,7 +122,7 @@ export default function Navbar() {
             {!isLoggedIn ? (
                 <Link
                     href="/auth/login/"
-                    className="px-6 py-2 font-bold tracking-wide text-gray-300 capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none cursor-pointer"
+                    className="px-6 py-2 text-sm font-bold tracking-wide text-gray-300 capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none cursor-pointer"
                 >
                     Sign In
                 </Link>
