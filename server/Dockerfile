@@ -21,4 +21,4 @@ COPY . .
 # Collect static files (optional: if you're serving static from backend)
 # RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "synerprise.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000"]
