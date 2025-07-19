@@ -61,7 +61,7 @@ class ActivateAccountView(APIView):
             user.save()
 
             # Redirect to frontend login page
-            login_url = config("NEXT_PUBLIC_FRONTEND_BASE_URL", default="http://192.168.68.137:3000") + "/auth/login/"
+            login_url = config("NEXT_PUBLIC_FRONTEND_BASE_URL") + "/auth/login/"
             return redirect(login_url)
 
             return Response({"msg": "Account activated successfully. You can now log in."})
