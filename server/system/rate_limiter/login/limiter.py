@@ -3,7 +3,7 @@ from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
 
-from system.rate_limiter.redis_client import redis_client
+from system.redis_client import redis_client
 
 
 def rate_limit_login(ip_limit=5, ip_window=60, user_limit=5):

@@ -1,0 +1,48 @@
+services:
+  server:
+    build: ./server
+    container_name: synerprise_server
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:${SERVER_PORT}
+    volumes:
+      - ./server:/app
+    ports:
+      - "${SERVER_PORT}:8000"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./server/.env
+
+  client:
+    build: ./client
+    container_name: synerprise_client
+    volumes:
+      - ./client/public:/app/public
+      - ./client/.env:/app/.env
+    ports:
+      - "${CLIENT_PORT}:3000"
+    depends_on:
+      - server
+
+  db:
+    image: postgres:15
+    container_name: synerprise_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:5432"
+
+  redis:
+    image: redis:6.2
+    container_name: synerprise_redis
+    ports:
+      - "${REDIS_PORT}:6379"
+
+volumes:
+  pgdata:
+
