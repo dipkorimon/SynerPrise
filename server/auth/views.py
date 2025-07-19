@@ -32,7 +32,7 @@ class RegisterView(APIView):
             token = email_activation_token.make_token(user)
             uid = user.pk
             domain = get_current_site(request).domain
-            activation_link = f"{config("NEXT_PUBLIC_FRONTEND_BASE_URL") + "/api/auth/activate/{uid}/{token}/"}"
+            activation_link = f"http://{domain}/api/auth/activate/{uid}/{token}/"
 
             # Send email (you can use sendgrid or SMTP)
             send_mail(
@@ -61,8 +61,8 @@ class ActivateAccountView(APIView):
             user.save()
 
             # Redirect to frontend login page
-            login_url = config("NEXT_PUBLIC_FRONTEND_BASE_URL") + "/auth/login/"
-            redirect(login_url)
+            login_url = config("NEXT_PUBLIC_FRONTEND_BASE_URL", default="http://192.168.68.137:3000") + "/auth/login/"
+            return redirect(login_url)
 
             return Response({"msg": "Account activated successfully. You can now log in."})
         else:
