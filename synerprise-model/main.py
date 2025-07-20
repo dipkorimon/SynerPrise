@@ -2,13 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from decouple import config
 
 
 # Allow frontend access
+NEXT_PUBLIC_FRONTEND_BASE_URL = config("NEXT_PUBLIC_FRONTEND_BASE_URL")
+
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can replace "*" with frontend domain
+    allow_origins=[NEXT_PUBLIC_FRONTEND_BASE_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
