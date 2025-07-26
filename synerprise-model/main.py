@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import os
 from decouple import config
 
+from inference.model_router import detect_input_type
+from inference.synerprise_bangla import generate_code as bangla_model
+from config import default_model
 
 # Allow frontend access
 NEXT_PUBLIC_FRONTEND_BASE_URL = config("NEXT_PUBLIC_FRONTEND_BASE_URL")
@@ -18,20 +20,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 👇 Define request schema
+# Define request schema
 class UserMessage(BaseModel):
     userMessage: str
 
 
-# 👇 Accept JSON and return response
+# Accept JSON and return response
 @app.post("/api/generate-code/")
 async def generate_code(message: UserMessage):
     user_input = message.userMessage.strip()
 
-    # Fake model output (replace later with real MT5)
-    generated_code = f"for i in range(5):\n    print(i)"
+    if not user_input:
+        return {
+            "userMessage": "",
+            "error": "Input message is empty.",
+            "model": default_model
+        }
 
-    return {
-        "userMessage": user_input,
-        "generated_code": generated_code
-    }
+    try:
+        selected_model = detect_input_type(user_input)
+        model_fn = bangla_model if selected_model == "synerprise-bangla" else ""
+
+        generated_code = model_fn(user_input)
+
+        if generated_code.startswith("[ERROR]"):
+            return {
+                "userMessage": user_input,
+                "error": "Code generation failed.",
+                "model": selected_model,
+                "details": generated_code
+            }
+
+        return {
+            "userMessage": user_input,
+            "generated_code": generated_code,
+            "model": selected_model
+        }
+
+    except Exception as e:
+        return {
+            "userMessage": user_input,
+            "error": "Internal server error during generation.",
+            "model": default_model,
+            "details": str(e)
+        }
