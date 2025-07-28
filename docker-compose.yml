@@ -10,8 +10,6 @@ services:
     depends_on:
       - db
       - redis
-    env_file:
-      - ./server/.env
 
   client:
     build: ./client
@@ -23,6 +21,18 @@ services:
       - "${CLIENT_PORT}:3000"
     depends_on:
       - server
+
+  synerprise-model:
+    build: ./synerprise-model
+    container_name: synerprise_model_service
+    ports:
+      - "${SYNERPRISE_MODEL_PORT}:9000"
+    volumes:
+      - ./synerprise-model:/app
+    command: uvicorn main:app --host 0.0.0.0 --port ${SYNERPRISE_MODEL_PORT}
+    restart: always
+    depends_on:
+      - redis
 
   db:
     image: postgres:15

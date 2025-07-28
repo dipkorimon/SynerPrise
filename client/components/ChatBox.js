@@ -25,10 +25,10 @@ export default function ChatBox() {
         setMessages((prev) => [...prev, userMessage]);
         setInput("");
 
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const API_BASE_URL = process.env.NEXT_PUBLIC_SYNERPRISE_MODEL_BASE_URL;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/generate-code/index/`, {
+            const response = await fetch(`${API_BASE_URL}/api/generate-code/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
