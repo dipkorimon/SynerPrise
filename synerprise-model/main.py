@@ -5,6 +5,7 @@ from decouple import config
 
 from inference.model_router import detect_input_type
 from inference.synerprise_bangla import generate_code as bangla_model
+from inference.synerprise_phonetic import generate_code as phonetic_model
 from config import default_model
 
 # Allow frontend access
@@ -39,7 +40,7 @@ async def generate_code(message: UserMessage):
 
     try:
         selected_model = detect_input_type(user_input)
-        model_fn = bangla_model if selected_model == "synerprise-bangla" else ""
+        model_fn = bangla_model if selected_model == "synerprise-bangla" else phonetic_model
 
         generated_code = model_fn(user_input)
 
