@@ -15,7 +15,7 @@ with open(os.path.join(model_dir, "target_tokenizer.pkl"), "rb") as f:
 
 # Build Inference Model
 encoder_inputs = model.input[0]
-encoder_outputs, state_h, state_c = model.get_layer("lstm_4").output
+encoder_outputs, state_h, state_c = model.get_layer("lstm_2").output
 encoder_model = Model(encoder_inputs, [encoder_outputs, state_h, state_c])
 
 decoder_inputs = Input(shape=(1,))
@@ -23,9 +23,9 @@ decoder_state_input_h = Input(shape=(LATENT_DIM,))
 decoder_state_input_c = Input(shape=(LATENT_DIM,))
 encoder_outputs_placeholder = Input(shape=(MAX_INPUT_LEN, LATENT_DIM))
 
-decoder_embedding = model.get_layer("embedding_5")(decoder_inputs)
-decoder_lstm = model.get_layer("lstm_5")
-decoder_dense = model.get_layer("dense_2")
+decoder_embedding = model.get_layer("embedding_3")(decoder_inputs)
+decoder_lstm = model.get_layer("lstm_3")
+decoder_dense = model.get_layer("dense_1")
 
 decoder_outputs, h, c = decoder_lstm(decoder_embedding, initial_state=[decoder_state_input_h, decoder_state_input_c])
 attention = Attention()([decoder_outputs, encoder_outputs_placeholder])
