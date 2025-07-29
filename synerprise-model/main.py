@@ -2,11 +2,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from decouple import config
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from inference.model_router import detect_input_type
 from inference.synerprise_bangla import generate_code as bangla_model
 from inference.synerprise_phonetic import generate_code as phonetic_model
 from config import default_model
+from system.limiter import limiter
 
 # Allow frontend access
 NEXT_PUBLIC_FRONTEND_BASE_URL = config("NEXT_PUBLIC_FRONTEND_BASE_URL")
@@ -21,6 +26,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, lambda request, exc: JSONResponse(
+    status_code=429,
+    content={"detail": "Rate limit exceeded. Try again later."}
+))
+app.add_middleware(SlowAPIMiddleware)
+
 # Define request schema
 class UserMessage(BaseModel):
     userMessage: str
@@ -28,7 +40,8 @@ class UserMessage(BaseModel):
 
 # Accept JSON and return response
 @app.post("/api/generate-code/")
-async def generate_code(message: UserMessage):
+@limiter.limit("10/minute")
+async def generate_code(request: Request, message: UserMessage):
     user_input = message.userMessage.strip()
 
     if not user_input:
