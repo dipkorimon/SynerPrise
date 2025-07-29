@@ -13,6 +13,7 @@ from inference.synerprise_phonetic import generate_code as phonetic_model
 from config import default_model
 from system.limiter import limiter
 from system.cache import redis_cache
+from system.logging import logger
 
 # Allow frontend access
 NEXT_PUBLIC_FRONTEND_BASE_URL = config("NEXT_PUBLIC_FRONTEND_BASE_URL")
@@ -57,11 +58,14 @@ async def generate_code(request: Request, message: UserMessage):
         # Check if output is already cached
         cached_output = redis_cache.get(cache_key)
         if cached_output:
+            logger.info(f"Cache HIT for key: {cache_key}")
             return {
                 "userMessage": user_input,
                 "generated_code": cached_output,
                 "model": "cached"
             }
+        else:
+            logger.info(f"Cache MISS for key: {cache_key}")
 
         # Model detection and generation
         selected_model = detect_input_type(user_input)
