@@ -217,12 +217,17 @@ class DeleteAccountView(APIView):
         password = request.data.get("password")
 
         if not password:
+            logger.warning(f"Account deletion failed: No password provided by user {request.user.username}")
             return Response({"detail": "Password is required."}, status=400)
 
         user = request.user
 
         if not user.check_password(password):
+            logger.warning(f"Account deletion failed: Incorrect password for user {user.username}")
             return Response({"detail": "Incorrect password."}, status=400)
 
+        username = user.username
         user.delete()
+        logger.info(f"Account deleted successfully for user: {username}")
+
         return Response({"detail": "Account deleted successfully."}, status=204)
