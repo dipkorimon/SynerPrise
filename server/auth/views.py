@@ -162,22 +162,27 @@ class ConfirmPasswordResetView(APIView):
         confirm_password = request.data.get("confirm_password")
 
         if not all([uid, token, password, confirm_password]):
+            logger.warning("Password reset confirmation failed: Missing fields.")
             return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if password != confirm_password:
+            logger.warning(f"Password reset confirmation failed: Password mismatch for uid={uid}")
             return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = User.objects.get(pk=uid)
         except User.DoesNotExist:
+            logger.warning(f"Password reset confirmation failed: Invalid user ID {uid}")
             return Response({"error": "Invalid user ID"}, status=status.HTTP_404_NOT_FOUND)
 
         if not password_reset_token.check_token(user, token):
+            logger.warning(f"Password reset confirmation failed: Invalid or expired token for user {user.username}")
             return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(password)
         user.save()
 
+        logger.info(f"Password reset successfully completed for user: {user.username}")
         return Response({"msg": "Password has been reset successfully"}, status=status.HTTP_200_OK)
 
 
