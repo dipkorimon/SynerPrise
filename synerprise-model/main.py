@@ -13,7 +13,7 @@ from inference.synerprise_phonetic import generate_code as phonetic_model
 from config import default_model
 from system.limiter import limiter
 from system.cache import redis_cache
-from system.logging import logger
+from ..logging.logger import logger
 
 # Allow frontend access
 NEXT_PUBLIC_FRONTEND_BASE_URL = config("NEXT_PUBLIC_FRONTEND_BASE_URL")
