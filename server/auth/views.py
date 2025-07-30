@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, update_session_auth_hash
 from system.rate_limiter.login.limiter import rate_limit_login
 from .serializers import RegisterSerializer
 from .utils import password_reset_token, email_activation_token
+from logs.logger import logger
 
 
 # Create your views here.
@@ -25,26 +26,38 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            user.is_active = False
-            user.save()
+            try:
+                user = serializer.save()
+                user.is_active = False
+                user.save()
 
-            token = email_activation_token.make_token(user)
-            uid = user.pk
-            domain = get_current_site(request).domain
-            activation_link = f"http://{domain}/api/auth/activate/{uid}/{token}/"
+                token = email_activation_token.make_token(user)
+                uid = user.pk
+                domain = get_current_site(request).domain
+                activation_link = f"http://{domain}/api/auth/activate/{uid}/{token}/"
 
-            # Send email (you can use sendgrid or SMTP)
-            send_mail(
-                subject="Activate your account",
-                message=f"Hi {user.username}, click the link to activate your account: {activation_link}",
-                from_email="noreply@example.com",
-                recipient_list=[user.email],
-            )
+                send_mail(
+                    subject="Activate your account",
+                    message=f"Hi {user.username}, click the link to activate your account: {activation_link}",
+                    from_email="noreply@example.com",
+                    recipient_list=[user.email],
+                )
 
-            return Response({"msg": "User registered. Check your email to activate account."},
-                            status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                logger.info(f"New user registered: {user.username}, activation email sent to {user.email}")
+
+                return Response(
+                    {"msg": "User registered. Check your email to activate account."},
+                    status=status.HTTP_201_CREATED,
+                )
+            except Exception as e:
+                logger.error(f"Error during registration for data={request.data}. Exception: {str(e)}", exc_info=True)
+                return Response(
+                    {"error": "Something went wrong during registration."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        else:
+            logger.warning(f"User registration failed. Errors: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ActivateAccountView(APIView):
