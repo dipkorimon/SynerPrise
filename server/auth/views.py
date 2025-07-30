@@ -67,20 +67,20 @@ class ActivateAccountView(APIView):
         try:
             user = User.objects.get(pk=uid)
         except User.DoesNotExist:
+            logger.warning(f"Activation attempt failed: User with uid={uid} not found.")
             return Response({"error": "Invalid user"}, status=status.HTTP_400_BAD_REQUEST)
 
         if email_activation_token.check_token(user, token):
             user.is_active = True
             user.save()
+            logger.info(f"Account activated for user: {user.username} (id={uid})")
 
-            # Redirect to frontend login page
             login_url = config("NEXT_PUBLIC_FRONTEND_BASE_URL", default="http://192.168.68.137:3000") + "/auth/login/"
             return redirect(login_url)
 
-            return Response({"msg": "Account activated successfully. You can now log in."})
         else:
+            logger.warning(f"Invalid or expired activation token for uid={uid}, user={user.username}")
             return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class LoginView(APIView):
