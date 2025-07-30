@@ -90,10 +90,14 @@ class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+
         user = authenticate(username=username, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
+            logger.info(f"Login successful for user: {username}")
             return Response({"token": token.key, "msg": "Login successful"})
+
+        logger.warning(f"Failed login attempt for username: {username}")
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
