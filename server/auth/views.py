@@ -119,11 +119,13 @@ class RequestPasswordResetView(APIView):
         redirect_url = request.data.get("redirect_url")
 
         if not email:
+            logger.warning("Password reset requested without providing email.")
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
+            logger.warning(f"Password reset requested for non-existent email: {email}")
             return Response({"error": "No user with this email"}, status=status.HTTP_404_NOT_FOUND)
 
         token = password_reset_token.make_token(user)
@@ -131,7 +133,6 @@ class RequestPasswordResetView(APIView):
         domain = get_current_site(request).domain
         reset_link = f"{redirect_url}/auth/password-reset-confirm/{uid}/{token}/"
 
-        # Email contains link + token and uid info
         message = (
             f"Click the link to reset your password:\n{reset_link}\n\n"
             f"Use the following details:\n"
@@ -145,6 +146,8 @@ class RequestPasswordResetView(APIView):
             from_email="noreply@example.com",
             recipient_list=[user.email],
         )
+
+        logger.info(f"Password reset link sent to {email}")
 
         return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
 
