@@ -4,7 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
-import {FiBell, FiHelpCircle, FiHome, FiInfo, FiLogOut, FiMail, FiSettings, FiTrendingUp} from "react-icons/fi";
+import {
+    FiBell,
+    FiHelpCircle,
+    FiHome,
+    FiInfo,
+    FiLogOut,
+    FiMail,
+    FiSettings,
+    FiShare2,
+    FiTrendingUp
+} from "react-icons/fi";
 import {RiLockPasswordLine} from "react-icons/ri";
 import SidebarItem from "@/components/SidebarItem";
 import {appVersion} from "@/system/version";
@@ -103,7 +113,7 @@ export default function Navbar() {
 
     return (
         <nav className="bg-gray-900 border-b border-gray-800 px-10 py-3 flex items-center justify-between text-white">
-            <div className="flex items-center gap-2 text-gray-300 text-xl font-bold">
+            <div className="flex items-center gap-2 text-white text-xl font-bold">
                 <Link href="/">
                     SynerPrise
                 </Link>
@@ -113,7 +123,7 @@ export default function Navbar() {
 
             <Link
                 href="#"
-                className="bg-gray-800 text-white px-5 py-2 rounded-lg shadow-sm flex items-center gap-3 hover:bg-gray-700 transition-all text-sm"
+                className="bg-gray-800 text-gray-300 px-5 py-2 rounded-lg shadow-sm flex items-center gap-3 hover:bg-gray-700 transition-all text-sm"
             >
                 <FiInfo className="text-yellow-400 animate-bounce" size={18} />
                 <span className="font-medium">Discover what’s new in <span className="font-semibold">SynerPrise</span></span>
@@ -130,10 +140,10 @@ export default function Navbar() {
                 <div className="relative flex gap-5" ref={dropdownRef}>
                     <Link
                         href="#"
-                        className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-sm font-bold rounded-lg shadow hover:from-yellow-500 hover:to-yellow-700 flex items-center gap-2"
+                        className="group inline-flex items-center gap-2 px-6 py-2 text-sm font-bold tracking-wide text-gray-300 capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none cursor-pointer"
                     >
-                        <FiTrendingUp />
-                        Upgrade Plan
+                        <FiShare2 className="" size={18} />
+                        <span className="">Share</span>
                     </Link>
                     <button
                         onClick={toggleDropdown}

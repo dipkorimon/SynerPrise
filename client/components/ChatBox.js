@@ -78,7 +78,7 @@ export default function ChatBox() {
     }
 
     return (
-        <div className="flex flex-col h-full w-200">
+        <div className="flex flex-col h-full w-200 mb-5">
             <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-hidden">
                 {messages.map((msg) => (
                     <div
