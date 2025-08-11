@@ -1,3 +1,4 @@
+booktype
 absl-py==2.3.1
 accelerate==1.9.0
 aiohappyeyeballs==2.6.1
