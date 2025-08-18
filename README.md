@@ -126,6 +126,23 @@ Redis is used extensively in SynerPrise to ensure high performance, security, an
 
 ---
 
+### 🔐 Bloom Filter Integration
+
+- **Purpose:** Reduce unnecessary database queries for username/email existence checks and improve registration, login & password reset efficiency.
+- **Implementation:** Using [PyBloom](https://pypi.org/project/pybloom/):
+  - `username_bloom` → Tracks existing usernames
+  - `email_bloom` → Tracks existing user emails
+  - False positives are handled with a fallback **database verification**.
+- **Usage:**
+  - **User Registration:** Checks Bloom Filter before querying DB; adds new entries after successful registration.
+  - **User Login:** Checks username/email in Bloom Filter before authenticating; reduces unnecessary DB hits.
+  - **Password Reset:** Checks email in Bloom Filter before generating reset token.
+- **Parameters:** Capacity=10,000, False positive rate=1%
+
+> Bloom Filter ensures high-performance lookups and reduces load on PostgreSQL, while still guaranteeing correctness via DB fallback.
+
+---
+
 ## 🪵 Custom Logging
 
 SynerPrise includes a structured, timestamped logging system built using a custom Python logger (e.g., via `pythonjsonlogger`).
