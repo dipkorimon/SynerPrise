@@ -1,3 +1,4 @@
+import time
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,6 +43,7 @@ class UserMessage(BaseModel):
 @app.post("/api/generate-code/")
 @limiter.limit("10/minute")
 async def generate_code(request: Request, message: UserMessage):
+    start_time = time.time()  # Start total request timer
     user_input = message.userMessage.strip()
     client_ip = request.client.host
 
@@ -78,10 +80,16 @@ async def generate_code(request: Request, message: UserMessage):
 
         model_fn = bangla_model if selected_model == "synerprise-bangla" else phonetic_model
 
-        # Generate code
+        # Model generation timing
+        gen_start_time = time.time()
         logger.info(f"Starting code generation using {selected_model}, user: {client_ip}")
         generated_code = model_fn(user_input)
-        logger.info(f"Code generation completed for user: {client_ip}, input preview: {user_input[:50]}")
+        gen_end_time = time.time()
+        logger.info(
+            f"Code generation completed for user: {client_ip}, "
+            f"duration: {gen_end_time - gen_start_time:.3f}s, "
+            f"input preview: {user_input[:50]}"
+        )
 
         # Handle generation errors
         if generated_code.startswith("[ERROR]"):
@@ -97,10 +105,14 @@ async def generate_code(request: Request, message: UserMessage):
         redis_cache.setex(cache_key, 86400, generated_code)
         logger.info(f"Cached generated code for key: {cache_key}, user: {client_ip}")
 
+        total_time = time.time() - start_time
+        logger.info(f"Total request duration for user {client_ip}: {total_time:.3f}s")
+
         return {
             "userMessage": user_input,
             "generated_code": generated_code,
-            "model": selected_model
+            "model": selected_model,
+            "request_duration_sec": round(total_time, 3)
         }
 
     except Exception as e:
