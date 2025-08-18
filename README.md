@@ -126,7 +126,7 @@ Redis is used extensively in SynerPrise to ensure high performance, security, an
 
 ---
 
-### 🔐 Bloom Filter Integration
+## 🔐 Bloom Filter Integration
 
 - **Purpose:** Reduce unnecessary database queries for username/email existence checks and improve registration, login & password reset efficiency.
 - **Implementation:** Using [PyBloom](https://pypi.org/project/pybloom/):
