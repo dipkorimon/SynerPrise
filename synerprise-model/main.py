@@ -43,37 +43,49 @@ class UserMessage(BaseModel):
 @limiter.limit("10/minute")
 async def generate_code(request: Request, message: UserMessage):
     user_input = message.userMessage.strip()
+    client_ip = request.client.host
+
+    # Log incoming request
+    logger.info(f"Received request from {client_ip}: {user_input}")
 
     if not user_input:
+        logger.warning(f"Empty input received from {client_ip}")
         return {
             "userMessage": "",
             "error": "Input message is empty.",
             "model": default_model
         }
 
-    # Redis cache key (hashing input)
+    # Redis cache key
     cache_key = f"gen:{hashlib.sha256(user_input.encode()).hexdigest()}"
 
     try:
-        # Check if output is already cached
+        # Check cache
         cached_output = redis_cache.get(cache_key)
         if cached_output:
-            logger.info(f"Cache HIT for key: {cache_key}")
+            logger.info(f"Cache HIT for key: {cache_key}, user: {client_ip}")
             return {
                 "userMessage": user_input,
                 "generated_code": cached_output,
                 "model": "cached"
             }
         else:
-            logger.info(f"Cache MISS for key: {cache_key}")
+            logger.info(f"Cache MISS for key: {cache_key}, user: {client_ip}")
 
-        # Model detection and generation
+        # Detect input type and select model
         selected_model = detect_input_type(user_input)
+        logger.info(f"Input type detected: {selected_model}, user: {client_ip}")
+
         model_fn = bangla_model if selected_model == "synerprise-bangla" else phonetic_model
 
+        # Generate code
+        logger.info(f"Starting code generation using {selected_model}, user: {client_ip}")
         generated_code = model_fn(user_input)
+        logger.info(f"Code generation completed for user: {client_ip}, input preview: {user_input[:50]}")
 
+        # Handle generation errors
         if generated_code.startswith("[ERROR]"):
+            logger.error(f"Code generation error for user: {client_ip}, details: {generated_code}")
             return {
                 "userMessage": user_input,
                 "error": "Code generation failed.",
@@ -81,8 +93,9 @@ async def generate_code(request: Request, message: UserMessage):
                 "details": generated_code
             }
 
-        # Cache the result for 24 hours (86400 seconds)
+        # Cache the result (24 hours)
         redis_cache.setex(cache_key, 86400, generated_code)
+        logger.info(f"Cached generated code for key: {cache_key}, user: {client_ip}")
 
         return {
             "userMessage": user_input,
@@ -91,6 +104,7 @@ async def generate_code(request: Request, message: UserMessage):
         }
 
     except Exception as e:
+        logger.exception(f"Internal server error during code generation for user: {client_ip}")
         return {
             "userMessage": user_input,
             "error": "Internal server error during generation.",
