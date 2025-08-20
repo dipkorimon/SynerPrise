@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, update_session_auth_hash
 
 from system.rate_limiter.login.limiter import rate_limit_login
 from .serializers import RegisterSerializer
-from .utils import password_reset_token, email_activation_token
+from .utils import password_reset_token, email_activation_token, username_bloom, email_bloom
 from logs.logger import logger
 
 
@@ -26,10 +26,29 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
+            username = request.data.get("username")
+            email = request.data.get("email")
+
+            # Username Bloom Filter + DB check
+            if username in username_bloom:
+                if User.objects.filter(username=username).exists():
+                    logger.warning(f"Username {username} already exists in DB")
+                    return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Email Bloom Filter + DB check
+            if email in email_bloom:
+                if User.objects.filter(email=email).exists():
+                    logger.warning(f"Email {email} already exists in DB")
+                    return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
             try:
                 user = serializer.save()
                 user.is_active = False
                 user.save()
+
+                # Add username & email to Bloom Filters after successful creation
+                username_bloom.add(user.username)
+                email_bloom.add(user.email)
 
                 token = email_activation_token.make_token(user)
                 uid = user.pk
@@ -91,6 +110,12 @@ class LoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
 
+        # Bloom Filter Pre-check
+        if username not in username_bloom:
+            logger.warning(f"Bloom Filter early reject: username {username} likely does not exist")
+            return Response({"error": "Invalid credentials from bloom"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Authenticate normally
         user = authenticate(username=username, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
@@ -122,6 +147,12 @@ class RequestPasswordResetView(APIView):
             logger.warning("Password reset requested without providing email.")
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Bloom Filter pre-check
+        if email not in username_bloom:
+            logger.warning(f"Password reset requested: Bloom Filter early reject for {email}")
+            return Response({"error": "No user with this email"}, status=status.HTTP_404_NOT_FOUND)
+
+        # DB final verification
         try:
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
