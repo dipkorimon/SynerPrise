@@ -6,12 +6,17 @@
 
 - 🔤 Bangla & Phonetic → Python code generation
 - 🧠 Custom Transformer-based Seq2Seq model (no pre-trained base)
+- 📊 Preprocessing & Tokenization: pandas, NumPy, Keras Tokenizer, pad_sequences
+- 🔢 One-hot encoding: `to_categorical` (from `tensorflow.keras.utils`)
+- 🧮 Model Architecture: Seq2Seq with LSTM layers and Attention
+- ⚙️ Loss & Optimization: Categorical Cross-Entropy, Adam optimizer
 - 🚀 Model inference served via **FastAPI**
 - 🌐 Fullstack architecture:
   - **Frontend**: Next.js
   - **Backend**: Django REST Framework (DRF)
   - **Model Service**: FastAPI
 - 🧰 **Redis-powered** rate limiting and response caching
+- 🧱 Bloom Filter for fast username/email existence checks (reduces DB queries)
 - 🪵 Custom logger for structured logs
 - 🐳 Fully Dockerized for deployment
 - 🗃️ PostgreSQL for persistent storage
@@ -45,7 +50,7 @@
      └───────────┬─────────────┘
                  │
          ┌───────▼────────┐
-         │   FastAPI      │  ◄──── Inference service
+         │   FastAPI      │  ◄──── Inference service (Tokenization → Encoder → Decoder → Output)
          │ Model Inference│
          └──────┬─────────┘
                 │
@@ -85,6 +90,10 @@ SynerPrise is composed of two independent microservices, each running in separat
 | Backend API | **Django REST Framework**  |
 | Inference   | **FastAPI** + **SQLAlchemy ORM** |
 | Model       | **Custom Transformer**     |
+| Model       | **Custom Seq2Seq with LSTM & Attention** |
+| Preprocessing | **pandas, NumPy, Keras Tokenizer, pad_sequences** |
+| Training     | **Categorical Cross-Entropy, Adam Optimizer, Teacher Forcing** |
+| Inference    | **Encoder-Decoder with Attention, Token-by-Token Generation** |
 | Database    | **PostgreSQL**             |
 | Cache/Rate  | **Redis**                  |
 | DevOps      | **Docker**, Docker Compose |
@@ -172,6 +181,12 @@ def factorial(n):
         return 1
     return n * factorial(n - 1)
 ```
+**Input preprocessing:**
+- Convert text to sequence with Keras Tokenizer
+- Pad sequences to max length
+
+**Output:**
+- Generated Python code using trained Seq2Seq model with attention
 ---
 
 ## 🏗️ SynerPrise System Architecture (Text-Based Diagram)
@@ -233,6 +248,10 @@ cd SynerPrise
 # Start the whole system
 docker-compose up --build
 ```
+### ML Model:
+- Load trained Keras model (.keras)
+- Load input & target tokenizers (Pickle files)
+- Seq2Seq inference with attention
 
 ---
 
