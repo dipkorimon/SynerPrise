@@ -2,24 +2,25 @@
 
 ---
 
-## 🧠 Core Highlights
+# 🧠 Core Highlights
 
-- 🔤 Bangla & Phonetic → Python code generation
-- 🧠 Custom Transformer-based Seq2Seq model (no pre-trained base)
-- 📊 Preprocessing & Tokenization: pandas, NumPy, Keras Tokenizer, pad_sequences
-- 🔢 One-hot encoding: `to_categorical` (from `tensorflow.keras.utils`)
-- 🧮 Model Architecture: Seq2Seq with LSTM layers and Attention
-- ⚙️ Loss & Optimization: Categorical Cross-Entropy, Adam optimizer
-- 🚀 Model inference served via **FastAPI**
-- 🌐 Fullstack architecture:
-  - **Frontend**: Next.js
-  - **Backend**: Django REST Framework (DRF)
-  - **Model Service**: FastAPI
-- 🧰 **Redis-powered** rate limiting and response caching
-- 🧱 Bloom Filter for fast username/email existence checks (reduces DB queries)
-- 🪵 Custom logger for structured logs
-- 🐳 Fully Dockerized for deployment
-- 🗃️ PostgreSQL for persistent storage
+- 🔤 **Bangla & Phonetic → Python code generation**
+- 🧠 **Transformer-based Seq2Seq architecture** with LSTM & Attention to translate Bangla and Phonetic Banglish prompts into executable Python code
+- 💡 **Designed and trained the model from scratch** (no pre-trained dependencies)
+- 📊 **Preprocessing:** Handled tokenization with `<unk>` tokens, padded sequences to uniform length, and applied one-hot encoding for model input preparation
+- 🔢 **Training:** Teacher Forcing, Categorical Cross-Entropy Loss, Adam optimizer
+- 🧮 **Inference:** Custom encoder–decoder pipeline with Attention and token-by-token decoding for real-time code synthesis
+- ⚙️ **Model Architecture:** Seq2Seq with LSTM layers and Attention
+- 🧰 **Loss & Optimization:** Categorical Cross-Entropy, Adam optimizer
+- 🌐 **Fullstack Architecture:**
+  - **Frontend:** Next.js
+  - **Backend:** Django REST Framework (DRF)
+  - **Model Service:** FastAPI
+- 🧪 **Redis-powered** rate limiting and response caching
+- 🧱 **Bloom Filter** for fast username/email existence checks (reduces DB queries)
+- 🪵 **Custom logger** for structured logs
+- 🐳 **Fully Dockerized** for deployment
+- 🗃️ **PostgreSQL** for persistent storage
 
 ---
 
