@@ -2,37 +2,21 @@
 
 ---
 
-## 🧠 Core Highlights
-
-- 🔤 **Bangla & Phonetic → Python code generation**
-- 🧠 **Transformer-based Seq2Seq architecture** with LSTM & Attention to translate Bangla and Phonetic Banglish prompts into executable Python code
-- 💡 **Designed and trained the model from scratch** (no pre-trained dependencies)
-- 📊 **Preprocessing:** Handled tokenization with `<unk>` tokens, padded sequences to uniform length, and applied one-hot encoding for model input preparation
-- 🔢 **Training:** Teacher Forcing, Categorical Cross-Entropy Loss, Adam optimizer
-- 🧮 **Inference:** Custom encoder–decoder pipeline with Attention and token-by-token decoding for real-time code synthesis
-- ⚙️ **Model Architecture:** Seq2Seq with LSTM layers and Attention
-- 🧰 **Loss & Optimization:** Categorical Cross-Entropy, Adam optimizer
-- 🌐 **Fullstack Architecture:**
-  - **Frontend:** Next.js
-  - **Backend:** Django REST Framework (DRF)
-  - **Model Service:** FastAPI
-- 🧪 **Redis-powered** rate limiting and response caching
-- 🧱 **Bloom Filter** for fast username/email existence checks (reduces DB queries)
-- 🪵 **Custom logger** for structured logs
-- 🐳 **Fully Dockerized** for deployment
-- 🗃️ **PostgreSQL** for persistent storage
-
----
-
 ## 🚀 SynerPrise Model Summary
 
-- Dataset: Paired Bengali/Phonetic commands and Python code.
-- Preprocessing: Tokenization with `<unk>`, sequence padding.
-- Architecture: Seq2Seq model with attention using LSTM layers.
-- Training: Teacher forcing, categorical cross-entropy loss, Adam optimizer.
-- Evaluation: Loss reported; further unseen data evaluation suggested.
-- Inference: Separate encoder-decoder with attention; token-by-token decoding.
-- Usage: Bengali command input → Python code output.
+- 📚 **Dataset:** Paired Bengali/Phonetic commands and Python code  
+- 🧠 **Model Architecture:** Transformer-based Seq2Seq with LSTM & Attention to translate Bangla and Phonetic Banglish prompts into executable Python code  
+- 💡 **Design & Training:** Fully built from scratch, no pre-trained dependencies  
+- 🛠️ **Preprocessing:**  
+  - Tokenization with `<unk>` tokens  
+  - Padded sequences to uniform length  
+  - One-hot encoding for model input preparation  
+- 🔢 **Training Setup:** Teacher Forcing, Categorical Cross-Entropy Loss, Adam optimizer  
+- 🧮 **Inference Pipeline:** Custom encoder–decoder with Attention, token-by-token decoding for real-time code generation  
+- ⚙️ **Architecture Details:** Seq2Seq with LSTM layers and Attention  
+- 📊 **Loss & Optimization:** Categorical Cross-Entropy, Adam optimizer  Design & Training: Fully built from scratch, no pre-trained dependencies
+- ✅ **Evaluation:** Loss reported; further evaluation on unseen data suggested  
+- 🚀 **Usage:** Bengali/Phonetic command input → Python code output
 
 *This model provides a foundational approach for neural code generation from Bengali natural language commands.*
 
