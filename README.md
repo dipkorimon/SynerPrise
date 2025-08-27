@@ -2,7 +2,7 @@
 
 ---
 
-# 🧠 Core Highlights
+## 🧠 Core Highlights
 
 - 🔤 **Bangla & Phonetic → Python code generation**
 - 🧠 **Transformer-based Seq2Seq architecture** with LSTM & Attention to translate Bangla and Phonetic Banglish prompts into executable Python code
@@ -24,7 +24,7 @@
 
 ---
 
-# SynerPrise Model Summary
+## 🚀 SynerPrise Model Summary
 
 - Dataset: Paired Bengali/Phonetic commands and Python code.
 - Preprocessing: Tokenization with `<unk>`, sequence padding.
