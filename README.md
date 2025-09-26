@@ -245,7 +245,7 @@ docker-compose up --build
 ### `POST /generate-code`
 ```json
 {
-  "input_text": "loop likho ja 1 theke 10 print kore"
+  "input_text": "Create function to square a number"
 }
 ```
 
