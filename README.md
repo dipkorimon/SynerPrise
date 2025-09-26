@@ -252,7 +252,23 @@ docker-compose up --build
 **Response:**
 ```json
 {
-  "output_text": "for i in range(1, 11):\n    print(i)"
+  "request_id": "REQ_20250927_0001",
+  "status": "success",
+  "input": {
+    "input_text": "Create function to square a number",
+    "language": "Banglish"
+  },
+  "output": {
+    "target_text": "def square(n):\n    return n*n\nprint(square(9))",
+    "execution_result": "Success",
+    "error_details": null,
+    "code_quality": "perfect"
+  },
+  "metadata": {
+    "model_version": "synerprise-seq2seq-v1.0",
+    "response_time_ms": 143,
+    "cached": false
+  }
 }
 ```
 
